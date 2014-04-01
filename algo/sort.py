@@ -1,15 +1,53 @@
 import unittest
 
 def insertion_sort(lst):
-    for j in range(1,len(lst)):
-        v = lst[j]
-        i = j - 1
-        while i >= 0 and lst[i] > v:
-            lst[i+1] = lst[i]
-            i -= 1
-        lst[i+1] = v
+    """Start sorting from the left to right
+    swap for each elements if it is greater than the element before
+    Growth: O(n^2)
+
+    Ref: 
+    """
+
+    # 1 -> n-1
+    for i in range(1,len(lst)): 
+        # O(t*(n-1))
+
+        v = lst[i]
+        j = i - 1
+        while j >= 0 and lst[j] > v:
+
+            # O(t*(n-1)*n)
+            lst[j+1] = lst[j]
+            j -= 1
+
+        lst[j+1] = v
 
     return lst
+
+def insertion_sort_right(lst):
+    """Start sorting from the higest value to smallest
+    start from the right to the left
+    find the index which hold the highest value
+    swap the highest index to the right 
+    Growth: O(n^2)
+    """
+
+    # n-1 -> 1
+    for i in range(len(lst)-1, 0, -1): 
+        # Growth: O(t * (n-1))
+
+        index = i
+        for j in range(i): 
+            # Growth: O(t*(n-1)*n) = O(n^2)
+
+            if lst[j] > lst[index]:
+                index = j
+        tmp = lst[i]
+        lst[i] = lst[index]
+        lst[index] = tmp
+
+    return lst
+        
 
 def merge(left, right):
     result = []
@@ -47,6 +85,9 @@ class SortTest(unittest.TestCase):
         self.lst = [9,3,1,5,4,2,8,10,7,6]
     def test_insertion_sort(self):
         lst = insertion_sort(self.lst)
+        self.assertEquals(lst, [1,2,3,4,5,6,7,8,9,10])
+    def test_insertion_sort_right(self):
+        lst = insertion_sort_right(self.lst)
         self.assertEquals(lst, [1,2,3,4,5,6,7,8,9,10])
     def test_merge(self):
         lst = merge([1,3,6,9,10],[2,4,5,7,8])
