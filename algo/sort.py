@@ -1,6 +1,6 @@
 import unittest
 
-def insertion_sort_right(lst):
+def selection_sort_right(lst):
     """Start sorting from the higest value to smallest
     start from the right to the left
     find the index which hold the highest value
@@ -27,7 +27,7 @@ def insertion_sort_right(lst):
 
     return lst
 
-def insertion_sort_left(lst):
+def selection_sort_left(lst):
     """Start sorting from the lowest value to highest
     start from the left to the right
     find the index which hold the lowest value
@@ -114,14 +114,14 @@ def merge_sort(lst):
 class SortTest(unittest.TestCase):
     def setUp(self):
         self.lst = [9,3,1,5,4,2,8,10,7,6]
-    def test_insertion_sort(self):
+    def test_ertion_sort(self):
         lst = insertion_sort(self.lst)
         self.assertEquals(lst, [1,2,3,4,5,6,7,8,9,10])
-    def test_insertion_sort_left(self):
-        lst = insertion_sort_left(self.lst)
+    def test_selection_sort_left(self):
+        lst = selection_sort_left(self.lst)
         self.assertEquals(lst, [1,2,3,4,5,6,7,8,9,10])
-    def test_insertion_sort_right(self):
-        lst = insertion_sort_right(self.lst)
+    def test_selection_sort_right(self):
+        lst = selection_sort_right(self.lst)
         self.assertEquals(lst, [1,2,3,4,5,6,7,8,9,10])
     def test_merge(self):
         lst = merge([1,3,6,9,10],[2,4,5,7,8])
