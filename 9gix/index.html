@@ -1,0 +1,35 @@
+<html>
+<head>
+  <title>9gIX</title>
+  <link rel="stylesheet" type="text/css" href="base.css">
+</head>
+<body>
+  <h1>Project 9gIX</h1>
+  <article>
+    <h2>Simple Computer Graphics</h2>
+    <canvas id="simple-cg" width="500" height="500"></canvas>
+  </article>
+  <article>
+    <h2>Classical Algorithms</h2>
+    <canvas id="classic-algo"></canvas>
+  </article>
+  <script id="shader-fs" type="x-shader/x-fragment">
+    void main(void) {
+      gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+    }
+  </script>
+  <script id="shader-vs" type="x-shader/x-vertex">
+    attribute vec3 aVertPos;
+
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+    
+    void main(void) {
+      gl_Position = uPMatrix * uMVMatrix * vec4(aVertPos, 1.0);
+    }
+  </script>
+  <script type="text/javascript" src="libs/glmatrix/gl-matrix.js"></script>
+  <script type="text/javascript" src="simple-cg.js"></script>
+  <script type="text/javascript" src="main.js"></script>
+</body>
+</html>
