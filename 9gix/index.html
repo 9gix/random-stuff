@@ -1,7 +1,7 @@
 <html>
 <head>
   <title>9gIX</title>
-  <link rel="stylesheet" type="text/css" href="base.css">
+  <link rel="stylesheet" type="text/css" href="/css/base.css">
 </head>
 <body>
   <h1>Project 9gIX</h1>
@@ -13,6 +13,32 @@
     <h2>Classical Algorithms</h2>
     <canvas id="classic-algo"></canvas>
   </article>
+
+  <!-- Shader data for Textured Cube -->
+  <script id="shader-vs-texture" type="x-shader/x-vertex">
+    attribute vec3 aVertPosition;
+    attribute vec2 aTexCoord;
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+    varying vec2 vTexCoord;
+
+    void main(void) {
+      gl_Position = uPMatrix * uMVMatrix * vec4(aVertPosition, 1.0);
+      vTexCoord = aTexCoord;
+    }
+  </script>
+
+  <script id="shader-fs-texture" type="x-shader/x-fragment">
+    precision lowp float;
+    varying vec2 vTexCoord;
+    uniform sampler2D uSampler;
+
+    void main(void) {
+      gl_FragColor = texture2D(uSampler, vec2(vTexCoord.s, vTexCoord.t));
+    }
+  </script>
+
+  <!-- Shader data for Colored Cube -->
   <script id="shader-vs" type="x-shader/x-vertex">
     attribute vec3 aVertPosition;
     attribute vec4 aVertColor;
@@ -33,8 +59,8 @@
       gl_FragColor = vColor;
     }
   </script>
-  <script type="text/javascript" src="libs/glmatrix/gl-matrix.js"></script>
-  <script type="text/javascript" src="simple-cg.js"></script>
-  <script type="text/javascript" src="main.js"></script>
+  <script type="text/javascript" src="/js/libs/glmatrix/gl-matrix.js"></script>
+  <script type="text/javascript" src="/js/simple-cg.js"></script>
+  <script type="text/javascript" src="/js/main.js"></script>
 </body>
 </html>
