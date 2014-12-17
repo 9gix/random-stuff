@@ -1,20 +1,50 @@
 
-var aVertPos, uMVMatrix, uPMatrix;
-var MVMatrix, PMatrix;
+var aVertPosition, aVertColor, uMVMatrix, uPMatrix;
+var MVMatrix, PMatrix, rotationAxis;
 
 
 function init(){
     var canvas = document.getElementById('simple-cg');
     var gl = initWebGL(canvas);
-    gl.clearColor(0.0, 1.0, 0.0, 1.0);
-    gl.clear(gl.COLOR_BUFFER_BIT);
 
     initViewport(gl, canvas);
     initShaders(gl);
     initMatrices(canvas);
     
-    var square = createSquare(gl);
-    draw(gl, square);
+    var cube = createCube(gl);
+    run(gl, cube);
+}
+
+var duration = 3000; // ms
+var currentTime = Date.now();
+function animate() {
+    var now = Date.now();
+    var delta = now - currentTime;
+    currentTime = now;
+    var fract = delta / duration;
+    var angle = Math.PI * 2 * fract;
+    mat4.rotate(MVMatrix, MVMatrix, angle, rotationAxis);
+}
+
+function run(gl, cube) {
+    requestAnimationFrame(
+        function() {
+            run(gl, cube);
+        });
+    draw(gl, cube);
+    animate();
+}
+
+
+function initMatrices(canvas){
+    MVMatrix = mat4.create();
+    mat4.translate(MVMatrix, MVMatrix, [0, 0, -8]);
+
+    PMatrix = mat4.create();
+    mat4.perspective(PMatrix, Math.PI / 4, canvas.width / canvas.height, 1, 10000);
+
+    rotationAxis = vec3.create();
+    vec3.normalize(rotationAxis, [1, 1, 1]);
 }
 
 function initWebGL(canvas){
@@ -37,34 +67,16 @@ function initShaders(gl){
     gl.useProgram(shaderProgram);
 
 
-    aVertPos = gl.getAttribLocation(shaderProgram, "aVertPos");
-    gl.enableVertexAttribArray(aVertPos);
+    aVertPosition = gl.getAttribLocation(shaderProgram, "aVertPosition");
+    gl.enableVertexAttribArray(aVertPosition);
+
+    aVertColor = gl.getAttribLocation(shaderProgram, "aVertColor");
+    gl.enableVertexAttribArray(aVertColor);
 
     uMVMatrix = gl.getUniformLocation(shaderProgram, "uMVMatrix");
 
     uPMatrix = gl.getUniformLocation(shaderProgram, "uPMatrix");
 
-}
-
-function initMatrices(canvas){
-    MVMatrix = mat4.create();
-    mat4.translate(MVMatrix, MVMatrix, [0, 0, -3.333]);
-
-    PMatrix = mat4.create();
-    mat4.perspective(PMatrix, Math.PI / 4, canvas.width / canvas.height, 1, 10000);
-}
-
-function draw(gl, obj){
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
-    gl.clear(gl.COLOR_BUFFER_BIT);
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, obj.buffer);
-
-    gl.vertexAttribPointer(aVertPos, obj.vertSize, gl.FLOAT, false, 0, 0);
-    gl.uniformMatrix4fv(uMVMatrix, false, MVMatrix);
-    gl.uniformMatrix4fv(uPMatrix, false, PMatrix);
-
-    gl.drawArrays(obj.primtype, 0, obj.nVerts);
 }
 
 function getFragmentShader(gl){
@@ -129,19 +141,135 @@ function createSquare(gl) {
     var vertexBuffer;
     vertexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-    var verts = [
-         .5,  .5,  0.0,
-        -.5,  .5,  0.0,
-         .5, -.5,  0.0,
-        -.5, -.5,  0.0
-    ];
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(verts), gl.STATIC_DRAW);
-    
+
+    var verts = new Float32Array([
+       .5,  .5,  0.0,
+      -.5,  .5,  0.0,
+       .5, -.5,  0.0,
+      -.5, -.5,  0.0
+    ]);
+    gl.bufferData(gl.ARRAY_BUFFER, verts, gl.STATIC_DRAW);
+
     var square = {
-        buffer:vertexBuffer,
-        vertSize:3,
-        nVerts:4,
-        primtype:gl.TRIANGLE_STRIP
+      buffer:vertexBuffer,
+      vertSize:3,
+      nVerts:4,
+      primtype:gl.TRIANGLE_STRIP
     };
     return square;
+}
+
+function createCube(gl){
+    // Vertices Position
+    var verts = [
+       // Front face
+       -1.0, -1.0,  1.0,
+        1.0, -1.0,  1.0,
+        1.0,  1.0,  1.0,
+       -1.0,  1.0,  1.0,
+
+       // Back face
+       -1.0, -1.0, -1.0,
+       -1.0,  1.0, -1.0,
+        1.0,  1.0, -1.0,
+        1.0, -1.0, -1.0,
+
+       // Top face
+       -1.0,  1.0, -1.0,
+       -1.0,  1.0,  1.0,
+        1.0,  1.0,  1.0,
+        1.0,  1.0, -1.0,
+
+       // Bottom face
+       -1.0, -1.0, -1.0,
+        1.0, -1.0, -1.0,
+        1.0, -1.0,  1.0,
+       -1.0, -1.0,  1.0,
+
+       // Right face
+        1.0, -1.0, -1.0,
+        1.0,  1.0, -1.0,
+        1.0,  1.0,  1.0,
+        1.0, -1.0,  1.0,
+
+       // Left face
+       -1.0, -1.0, -1.0,
+       -1.0, -1.0,  1.0,
+       -1.0,  1.0,  1.0,
+       -1.0,  1.0, -1.0
+    ];
+
+    var vertexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);   
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(verts), gl.STATIC_DRAW);
+    
+
+    // Vertices Color
+    var faceColors = [
+        [1.0, 0.0, 0.0, 1.0], // front color
+        [0.0, 1.0, 0.0, 1.0], // back color
+        [0.0, 0.0, 1.0, 1.0], // top color
+        [1.0, 1.0, 0.0, 1.0], // bottom color
+        [0.0, 1.0, 1.0, 1.0], // right color
+        [1.0, 0.0, 1.0, 1.0], // left color
+    ]
+
+    var vertexColors = [];
+    for (var i in faceColors){
+        var color = faceColors[i];
+        for (var j = 0; j < 4; j++){
+            vertexColors = vertexColors.concat(color);
+        }
+    }
+
+    var colorBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexColors), gl.STATIC_DRAW);
+
+
+    // Element Array
+    var cubeIndices = [
+        0, 1, 2,        0, 2, 3,        // Front
+        4, 5, 6,        4, 6, 7,        // Back
+        8, 9, 10,       8, 10, 11,      // Top
+        12, 13, 14,     12, 14, 15,     // Bottom
+        16, 17, 18,     16, 18, 19,     // Right
+        20, 21, 22,     20, 22, 23,     // Left
+    ];
+    var cubeIndexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cubeIndexBuffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cubeIndices), gl.STATIC_DRAW);
+
+    var cube = {
+        buffer: vertexBuffer,
+        colorBuffer: colorBuffer,
+        indices: cubeIndexBuffer,
+        vertSize: 3,
+        nVerts: 24,
+        colorSize: 4,
+        nColor: 24,
+        nIndices: 36,
+        primtype: gl.TRIANGLES,
+    };
+
+    return cube;
+}
+
+function draw(gl, obj){
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.enable(gl.DEPTH_TEST);
+    gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, obj.buffer);
+    gl.vertexAttribPointer(aVertPosition, obj.vertSize, gl.FLOAT, false, 0, 0);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, obj.colorBuffer);
+    gl.vertexAttribPointer(aVertColor, obj.colorSize, gl.FLOAT, false, 0, 0);
+
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, obj.indices);
+
+    gl.uniformMatrix4fv(uMVMatrix, false, MVMatrix);
+    gl.uniformMatrix4fv(uPMatrix, false, PMatrix);
+
+    gl.drawElements(obj.primtype, obj.nIndices, gl.UNSIGNED_SHORT, 0);
 }
