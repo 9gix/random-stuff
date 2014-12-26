@@ -41,7 +41,7 @@ DELAY = 0.5
 
 # Program 1:
 current_state = 0
-def prog1(delay):
+def prog1():
     """Blinking LED"""
     time.sleep(DELAY)
     global current_state
@@ -50,7 +50,7 @@ def prog1(delay):
 
 # Program 2:
 counter = 0
-def prog2(delay):
+def prog2():
     """4-bit Binary Counter"""
     time.sleep(DELAY)
     global counter
@@ -65,7 +65,7 @@ def prog2(delay):
 # Program 3:
 output_led = 0
 def prog3():
-	"""Blink in order"""
+    """Blink in order"""
     time.sleep(DELAY)
     global output_led
     GPIO.output(output_list, 0)
@@ -75,7 +75,7 @@ def prog3():
 
 # Program 4:
 def prog4():
-	"""Random Blinking"""
+    """Random Blinking"""
     time.sleep(0.05)
     for i in output_list:
         new_val = random.randint(0, 1)
@@ -83,7 +83,7 @@ def prog4():
 
 
 def main():
-	prog = [prog1, prog2, prog3, prog4]
+    prog = [prog1, prog2, prog3, prog4]
     try:
         while True:
             in_state = [GPIO.input(i) for i in input_list]
@@ -99,8 +99,8 @@ def main():
                 prog[i]()
 
     except KeyboardInterrupt:
-		print("Terminating Program, Good Bye!!!")
-	finally:
+        print("Terminating Program, Good Bye!!!")
+    finally:
         GPIO.cleanup()
 
 if __name__ == '__main__':
