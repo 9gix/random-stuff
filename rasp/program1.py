@@ -40,13 +40,11 @@ DELAY = 0.5
 
 
 # Program 1:
-current_state = 0
 def prog1():
     """Blinking LED"""
     time.sleep(DELAY)
-    global current_state
-    current_state = not current_state
-    GPIO.output(output_list, current_state)
+    for o in output_list:
+        GPIO.output(o, not GPIO.input(o))
 
 # Program 2:
 counter = 0
