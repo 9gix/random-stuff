@@ -41,9 +41,9 @@ DELAY = 0.5
 
 # Program 1:
 def prog1():
-    """Blinking LED"""
-    time.sleep(DELAY)
+    """Blinking LED one by one"""
     for o in output_list:
+        time.sleep(DELAY)
         GPIO.output(o, not GPIO.input(o))
 
 # Program 2:
