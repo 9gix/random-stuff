@@ -69,7 +69,7 @@ broadcast 192.168.0.255
 ## Setup VNC for Remote Desktop
 `sudo apt-get install tightvncserver`
 
-``bash
+```bash
 # File: /etc/init.d/vncboot
 
 ### BEGIN INIT INFO
