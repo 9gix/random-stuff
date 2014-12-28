@@ -112,5 +112,6 @@ exit 0
 ```
 
 `chmod 755 vncboot`
+
 `update-rc.d vncboot defaults`
 
