@@ -94,12 +94,12 @@ case "$1" in
  start)
   echo "Starting VNC Server"
   #Insert your favoured settings for a VNC session
-  su - $USER -c /usr/bin/vncserver :0 -geometry 1280x800 -depth 16 -pixelformat rgb565
+  su $USER -c '/usr/bin/vncserver :0 -geometry 1280x800 -depth 16 -pixelformat rgb565'
   ;;
 
  stop)
   echo "Stopping VNC Server"
-  su - $USER -c /usr/bin/vncserver -kill :0
+  su $USER -c '/usr/bin/vncserver -kill :0'
   ;;
 
  *)
