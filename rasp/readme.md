@@ -115,3 +115,16 @@ exit 0
 
 `update-rc.d vncboot defaults`
 
+## SSH Keep Alive
+
+```
+# Server
+# File: /etc/ssh/sshd_config
+ClientAliveInterval 300
+ClientAliveCountMax 2
+
+# or Client
+# File: /etc/ssh/ssh_config
+ServerAliveInterval 300
+ServerAliveCountMax 2
+```
