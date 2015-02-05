@@ -5,7 +5,7 @@ var simpleCG = function(){
     var fragmentShaderScriptId, vertexShaderScriptId;
     var texture, useTexture, aTexCoord, uSampler, textureSource;
     useTexture = true;
-    textureSource = "/images/box.jpg";
+    textureSource = "images/box.jpg";
 
     if (useTexture){
         fragmentShaderScriptId = "shader-fs-texture";
